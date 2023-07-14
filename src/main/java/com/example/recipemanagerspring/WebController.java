@@ -40,13 +40,17 @@ public class WebController {
     }
 
     @PostMapping("/products/add")
-    public Boolean addProduct(@RequestBody Product product){
+    public boolean addProduct(@RequestBody Product product){
         return dbConnector.addProduct(product);
     }
 
     @PutMapping("/product")
-    public Boolean editProduct(@RequestParam String id, @RequestBody Product product){
+    public boolean editProduct(@RequestParam String id, @RequestBody Product product){
         return dbConnector.editProduct(Integer.parseInt(id), product);
     }
 
+    @PostMapping("/recipe/add")
+    public boolean addRecipe(@RequestBody Recipe recipe){
+        return dbConnector.addRecipe(recipe);
+    }
 }
