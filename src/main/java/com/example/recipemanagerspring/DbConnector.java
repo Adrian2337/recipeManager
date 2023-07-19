@@ -83,7 +83,7 @@ public class DbConnector {
     //method to add new product to database
     //TODO prevent dupes
     public boolean addProduct(Product product){
-        jdbcTemplate.update("INSERT INTO products (products.name, products.quantityName) VALUES(?, ?)", product.getName(),
+        jdbcTemplate.update("INSERT INTO products (name, quantityName) VALUES(?, ?)", product.getName(),
                 product.getQuantityName());
 
         return true;
@@ -91,14 +91,14 @@ public class DbConnector {
     //TODO prevent dupes
     //updates products values at given id
     public boolean editProduct(int id, Product product){
-        jdbcTemplate.update("UPDATE products SET products.name=?, products.quantityName=? WHERE products.id=?",
+        jdbcTemplate.update("UPDATE products SET name=?, quantityName=? WHERE id=?",
                 product.getName(), product.getQuantityName(), id);
         return true;
     }
     //method to add recipe to DB
         public boolean addRecipe(Recipe recipe){
         GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
-        String sql = "INSERT INTO recipes (recipes.name, recipes.shortdescription, recipes.recipetext, recipes.category) " +
+        String sql = "INSERT INTO recipes (name, shortdescription, recipetext, category) " +
                 "VALUES (?,?,?,?)";
         jdbcTemplate.update(con -> {
             PreparedStatement preparedStatement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -125,6 +125,32 @@ public class DbConnector {
             }
         return true;
         }
+    }
+    //method to delete Recipe from DB
+    public boolean deleteRecipe(int id){
+        deleteProductList(id);
+        jdbcTemplate.update("DELETE FROM recipes WHERE id=?", id);
+
+        return true;
+    }
+    //method to edit Recipe at given ID
+    //todo test
+    public boolean editRecipe(int id, Recipe recipe){
+        Recipe oldRecipe = getRecipeWithId(id);
+        jdbcTemplate.update("UPDATE recipes SET name=?, shortDescription=?, recipetext=?, category=? WHERE id=?",
+                recipe.getName(), recipe.getShortDescription(), recipe.getRecipeText(), recipe.getCategory().getId(), id);
+        if(oldRecipe.getProducts().equals(recipe.getProducts())){
+            return true;
+        } else{
+            deleteProductList(recipe.getId());
+            addRecipeProductListToDB(recipe);
+            return true;
+        }
+    }
+    //deletes list of product belonging to Recipe with given id from DB recipe_product table
+    public boolean deleteProductList(int id){
+        jdbcTemplate.update("DELETE FROM recipe_product WHERE recipeid=?", id);
+        return true;
     }
 
 }

@@ -53,4 +53,12 @@ public class WebController {
     public boolean addRecipe(@RequestBody Recipe recipe){
         return dbConnector.addRecipe(recipe);
     }
+
+    @DeleteMapping("/recipe")
+    public boolean deleteRecipe(@RequestParam String id){
+        return dbConnector.deleteRecipe(Integer.parseInt(id));
+    }
+
+    @PutMapping("/recipe")
+    public  boolean editRecipe(@RequestParam String id, @RequestBody Recipe recipe){ return dbConnector.editRecipe(Integer.parseInt(id), recipe);}
 }
