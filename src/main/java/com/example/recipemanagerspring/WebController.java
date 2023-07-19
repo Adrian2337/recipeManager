@@ -25,8 +25,11 @@ public class WebController {
     }
 
     @GetMapping("/recipes")
-    public List<Recipe> getAllRecipes(){
-        return dbConnector.getAllRecipes();
+    public List<Recipe> getRecipes(@RequestParam(required = false) String product){
+
+        if(product == null){
+            return dbConnector.getAllRecipes();
+        } else return dbConnector.getRecipesContainingProduct(Integer.parseInt(product));
     }
 
     @GetMapping("/recipe")
@@ -61,4 +64,6 @@ public class WebController {
 
     @PutMapping("/recipe")
     public  boolean editRecipe(@RequestParam String id, @RequestBody Recipe recipe){ return dbConnector.editRecipe(Integer.parseInt(id), recipe);}
+
+
 }

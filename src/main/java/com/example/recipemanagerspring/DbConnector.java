@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -64,7 +65,6 @@ public class DbConnector {
                 BeanPropertyRowMapper.newInstance(Recipe.class), id);
         addProductListToRecipe(r);
         addCategoryToRecipe(r);
-        System.out.println(r.getRecipeText());
         return r;
     }
 
@@ -134,8 +134,7 @@ public class DbConnector {
         return true;
     }
     //method to edit Recipe at given ID
-    //todo test
-    public boolean editRecipe(int id, Recipe recipe){
+       public boolean editRecipe(int id, Recipe recipe){
         Recipe oldRecipe = getRecipeWithId(id);
         jdbcTemplate.update("UPDATE recipes SET name=?, shortDescription=?, recipetext=?, category=? WHERE id=?",
                 recipe.getName(), recipe.getShortDescription(), recipe.getRecipeText(), recipe.getCategory().getId(), id);
@@ -151,6 +150,19 @@ public class DbConnector {
     public boolean deleteProductList(int id){
         jdbcTemplate.update("DELETE FROM recipe_product WHERE recipeid=?", id);
         return true;
+    }
+
+    //method to get all recipes using certain product
+    public List<Recipe> getRecipesContainingProduct(int productId){
+        List<Recipe> recipes = new ArrayList<>();
+        List<Integer> recipeIds = jdbcTemplate.queryForList("SELECT recipeid FROM recipe_product WHERE productid=?",
+                Integer.class, productId);
+
+        for (Integer r: recipeIds){
+           recipes.add(getRecipeWithId(r));
+       }
+
+        return recipes;
     }
 
 }
