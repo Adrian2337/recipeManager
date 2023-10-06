@@ -114,7 +114,7 @@ public class DbConnector {
         return true;
     }
 
-    //helper method for inserting to DB list of products with their quantities for Recipe in DB
+    //helper method for inserting into DB list of products with their quantities for a Recipe in DB
     public boolean addRecipeProductListToDB(Recipe recipe){
         if(recipe.getProducts().size()==0) return false;
         else{
